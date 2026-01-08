@@ -7,23 +7,18 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.Keys;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static com.codeborne.selenide.Selenide.*;
 
 class RegistrationTest {
 
-    @BeforeAll
-    static void setUp() {
-        Configuration.headless = true;
-    }
-
     @Test
     void shouldRegisterByCardDelivery() {
 
-        Selenide.open("http://localhost:9999");
-        String date = LocalDate.now().plusDays(3).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        open("http://localhost:9999");
+        String  date = LocalDate.now().plusDays(4).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[data-test-id=city] input").setValue("Москва");
         $("[data-test-id=date] input").sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(date);
@@ -33,7 +28,6 @@ class RegistrationTest {
         $("button.button").click();
         $("[data-test-id=notification]").shouldBe(Condition.visible, Duration.ofSeconds(15));
         String notificationText = $("[data-test-id=notification] .notification__content").getText();
-        System.out.println("Текст уведомления: " + notificationText);
         $("[data-test-id=notification] .notification__content").shouldHave(Condition.text("Встреча успешно забронирована на " + date));
     }
 }
